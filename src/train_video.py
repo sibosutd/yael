@@ -59,17 +59,20 @@ def save_model(sample, type_feature, RESULT_PATH, TYPE):
 	cov = np.dot(sample.T, sample)
 	# compute PCA matrix and keep only 64 dimensions
 	eigvals, eigvecs = np.linalg.eig(cov)
-	perm = eigvals.argsort()                   # sort by increasing eigenvalue
-	pca_transform = eigvecs[:, perm[-DIM_AFTER_PCA:]]   # eigenvectors for the 64 last eigenvalues
+	# sort by increasing eigenvalue
+	perm = eigvals.argsort()
+	# eigenvectors for the 64 last eigenvalues
+	pca_transform = eigvecs[:, perm[-DIM_AFTER_PCA:]]
 	# transform sample with PCA (note that numpy imposes line-vectors,
 	# so we right-multiply the vectors)
 	sample = np.dot(sample, pca_transform)
 	# train GMM
 	gmm = ynumpy.gmm_learn(sample, k)
-	# save mean and pca_transform to file
+	# save mean value to file
 	file_mean = open(RESULT_PATH + 'mean_' + type_feature + '_' + TYPE + '.pkl', 'wb')
 	pickle.dump(mean, file_mean)
 	file_mean.close()
+	# save pca transform to file
 	file_pca = open(RESULT_PATH + 'pca_' + type_feature + '_' + TYPE + '.pkl', 'wb')
 	pickle.dump(pca_transform, file_pca)
 	file_pca.close()
@@ -119,6 +122,7 @@ sample_hog  = sample[:, 30:126]
 sample_hof  = sample[:, 126:234]
 sample_mbh  = sample[:, 234:426]
 
+# save gmm model, mean value, pca transform
 gmm_traj, mean_traj, pca_traj = save_model(sample_traj, 'traj', RESULT_PATH, 'video')
 gmm_hog, mean_hog, pca_hog = save_model(sample_hog, 'hog', RESULT_PATH, 'video')
 gmm_hof, mean_hof, pca_hof = save_model(sample_hof, 'hof', RESULT_PATH, 'video')

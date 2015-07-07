@@ -6,7 +6,7 @@ print __doc__
 
 import os, sys, pickle, time, datetime
 import numpy as np
-from sklearn import svm, cross_validation, preprocessing
+from sklearn import svm, cross_validation
 from sklearn.metrics import confusion_matrix
 
 BASE_PATH = '/home/sibo/Documents/Projects/'
@@ -42,9 +42,6 @@ svc_score = 0
 rbf_svc_score = 0
 # poly_svc_score = 0
 lin_svc_score = 0
-
-# Preprocess the data
-# X = preprocessing.scale(X)
 
 for i in range(TIMES):
 
