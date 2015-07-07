@@ -38,11 +38,11 @@ Thumbs.db
 
 # Library #
 ###########
-./yael_v438
+yael_v438
 
 # Datasets #
 ############
-./data_txt
-./test_data
-./rebuild
-./feature
+data_txt
+test_data
+rebuild
+feature
