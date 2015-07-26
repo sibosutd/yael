@@ -64,7 +64,8 @@ Multimodal Sensors Project Notes
 	+ 27 dimension: Date, Timestamp, Accelerometer1, Accelerometer2, Accelerometer3, Gravity1, Gravity2, Gravity3, Gyroscope1, Gyroscope2, Gyroscope3, **Light**, LinearAcceleration1, LinearAcceleration2, LinearAcceleration3, MagneticField1, MagneticField2, MagneticField3, RotationVector1, RotationVector2, RotationVector3, RotationVector4, **Latitude, Longitude, Altitude, Bearing, Speed**
 	+ Sampling rate: 10Hz
 
-## Dataset
+## Dataset preview
+![dataset preview in .gif][dataset preview in .gif]
 
 ## Pipeline
 + Video data processing: 
@@ -135,3 +136,6 @@ Multimodal Sensors Project Notes
 		+ Linear SVC:  0.792
 	+ Confusion matrix
 
+<!-- Links -->
+
+[dataset preview in .gif]: https://http://sibosutd.github.io/yael/ "dataset preview"
