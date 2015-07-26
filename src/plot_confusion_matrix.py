@@ -14,7 +14,7 @@ from sklearn.metrics import confusion_matrix
 
 BASE_PATH = '/home/sibo/Documents/Projects/'
 RESULT_PATH = BASE_PATH + 'yael/results/'
-TYPE = 'video'
+TYPE = 'all'
 
 # read data from csv file
 cm_normalized = genfromtxt(RESULT_PATH + 'confusion_matrix_' + TYPE + '.csv', delimiter=',')
@@ -24,8 +24,8 @@ def plot_confusion_matrix(cm, title='Confusion matrix', cmap=plt.cm.Blues):
     plt.title(title)
     plt.colorbar()
     # tick_marks = np.arange(len(iris.target_names))
-    # plt.xticks(tick_marks, iris.target_names, rotation=45)
-    # plt.yticks(tick_marks, iris.target_names)
+    plt.xticks(np.arange(20), np.arange(1,21), rotation=45)
+    plt.yticks(np.arange(20), np.arange(1,21))
     plt.tight_layout()
     plt.ylabel('True label')
     plt.xlabel('Predicted label')

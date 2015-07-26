@@ -18,7 +18,7 @@ TYPE = 'sensor'
 sys.path.append(LIBRARY_PATH)
 from yael import ynumpy
 
-WINDOW_SIZE = 5
+WINDOW_SIZE = 10
 
 ######################################################
 # list of available images
@@ -56,7 +56,7 @@ all_data_np = np.vstack(all_data)
 
 ######################################################
 # GMM part
-k = 10
+k = 25
 n_sample = k * 100
 # choose n_sample descriptors at random
 sample_indices = np.random.choice(all_data_np.shape[0], n_sample)
