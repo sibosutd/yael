@@ -2,16 +2,16 @@
 Training GMM model and SVM model for video data.
 '''
 __author__ = '1000892'
-print __doc__
+print(__doc__)
 
 import os, sys, pickle, time, datetime
 import numpy as np
 from sklearn import svm
 
 BASE_PATH = '/home/sibo/Documents/Projects/'
-DATASET_PATH = BASE_PATH + 'multimodal_sensors/video_data/feature/'
+DATASET_PATH = BASE_PATH + 'yael/feature/'
 LIBRARY_PATH = BASE_PATH + 'yael/yael_v438/'
-RESULT_PATH = BASE_PATH + 'multimodal_sensors/results/'
+RESULT_PATH = BASE_PATH + 'yael/results/'
 TYPE = 'video'
 
 sys.path.append(LIBRARY_PATH)
@@ -98,19 +98,19 @@ video_names.sort()
 sample = []
 for vname in video_names:
 	# train with first 9 data in each activity
-	if not vname.endswith('10.txt'):
-		print 'reading file:', vname
-		video_data = np.genfromtxt(DATASET_PATH + vname)
-		# delete first ten columns
-		video_data = video_data[:, 10:]
-		nrow, ncol = video_data.shape
-		print nrow, ncol
+	# if not vname.endswith('10.txt'):
+	print 'reading file:', vname
+	video_data = np.genfromtxt(DATASET_PATH + vname)
+	# delete first ten columns
+	video_data = video_data[:, 10:]
+	nrow, ncol = video_data.shape
+	print nrow, ncol
 
-		sample_indices = np.random.choice(nrow, 0.01 * nrow)
-		sample_each = video_data[sample_indices]
-		sample_each = sample_each.astype('float32')
-		
-		sample.append(sample_each)
+	sample_indices = np.random.choice(nrow, 0.01 * nrow)
+	sample_each = video_data[sample_indices]
+	sample_each = sample_each.astype('float32')
+	
+	sample.append(sample_each)
 
 sample = np.vstack(sample)
 print sample.shape
@@ -131,31 +131,31 @@ gmm_mbh, mean_mbh, pca_mbh = save_model(sample_mbh, 'mbh', RESULT_PATH, 'video')
 image_fvs = []
 for vname in video_names:
 	# train with first 9 data in each activity
-	if not vname.endswith('10.txt'):
-		print 'reading file:', vname
-		video_data = np.genfromtxt(DATASET_PATH + vname)
-		# delete first ten columns
-		video_data = video_data[:,10:]
-		video_data = video_data.astype('float32')
-		# seperate data into different features
-		video_data_traj = video_data[:, 0:30]
-		video_data_hog  = video_data[:, 30:126]
-		video_data_hof  = video_data[:, 126:234]
-		video_data_mbh  = video_data[:, 234:426]
-		# apply the PCA to the image descriptor
-		video_data_traj = np.dot(video_data_traj - mean_traj, pca_traj)
-		video_data_hog = np.dot(video_data_hog - mean_hog, pca_hog)
-		video_data_hof = np.dot(video_data_hof - mean_hof, pca_hof)
-		video_data_mbh = np.dot(video_data_mbh - mean_mbh, pca_mbh)
-		# compute the Fisher vector, using the derivative w.r.t mu and sigma
-		fv_traj = ynumpy.fisher(gmm_traj, video_data_traj, include = 'mu, sigma')
-		fv_hog = ynumpy.fisher(gmm_hog, video_data_hog, include = 'mu, sigma')
-		fv_hof = ynumpy.fisher(gmm_hof, video_data_hof, include = 'mu, sigma')
-		fv_mbh = ynumpy.fisher(gmm_mbh, video_data_mbh, include = 'mu, sigma')
-		# concatenate the fisher vectors
-		fv = np.concatenate((fv_traj, fv_hog, fv_hof, fv_mbh))
-		print fv.shape
-		image_fvs.append(fv)
+	# if not vname.endswith('10.txt'):
+	print 'reading file:', vname
+	video_data = np.genfromtxt(DATASET_PATH + vname)
+	# delete first ten columns
+	video_data = video_data[:,10:]
+	video_data = video_data.astype('float32')
+	# seperate data into different features
+	video_data_traj = video_data[:, 0:30]
+	video_data_hog  = video_data[:, 30:126]
+	video_data_hof  = video_data[:, 126:234]
+	video_data_mbh  = video_data[:, 234:426]
+	# apply the PCA to the image descriptor
+	video_data_traj = np.dot(video_data_traj - mean_traj, pca_traj)
+	video_data_hog = np.dot(video_data_hog - mean_hog, pca_hog)
+	video_data_hof = np.dot(video_data_hof - mean_hof, pca_hof)
+	video_data_mbh = np.dot(video_data_mbh - mean_mbh, pca_mbh)
+	# compute the Fisher vector, using the derivative w.r.t mu and sigma
+	fv_traj = ynumpy.fisher(gmm_traj, video_data_traj, include = 'mu, sigma')
+	fv_hog = ynumpy.fisher(gmm_hog, video_data_hog, include = 'mu, sigma')
+	fv_hof = ynumpy.fisher(gmm_hof, video_data_hof, include = 'mu, sigma')
+	fv_mbh = ynumpy.fisher(gmm_mbh, video_data_mbh, include = 'mu, sigma')
+	# concatenate the fisher vectors
+	fv = np.concatenate((fv_traj, fv_hog, fv_hof, fv_mbh))
+	print fv.shape
+	image_fvs.append(fv)
 
 # make one matrix with all FVs
 image_fvs = np.vstack(image_fvs)
@@ -175,10 +175,9 @@ file_fv.close()
 
 #####################################################
 # SVM train part
-C = 100
+C = 10
 X_train = image_fvs
-# y_train = np.concatenate((0*np.ones(9), 1*np.ones(9), 2*np.ones(9), 3*np.ones(9), 4*np.ones(9), 5*np.ones(9), 6*np.ones(9), 7*np.ones(9), 8*np.ones(9), 9*np.ones(9)))
-y_train = np.concatenate((0*np.ones(10), 1*np.ones(10), 2*np.ones(10), 3*np.ones(10), 4*np.ones(10), 5*np.ones(10), 6*np.ones(10), 7*np.ones(10), 8*np.ones(10), 9*np.ones(10)))
+y_train = np.kron(np.arange(20), np.ones(10))
 
 svc = svm.SVC(kernel='linear', C=C).fit(X_train, y_train)
 

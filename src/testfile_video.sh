@@ -6,7 +6,7 @@
 
 # initialize
 start_time=`date +%s`
-BASE='/home/sibo/Documents/Projects'
+BASE=/home/sibo/Documents/Projects
 TRAJ_PATH=$BASE/multimodal_sensors/code/dense_trajectory_release_v1.2/release
 REBUILD_PATH=$BASE/yael/rebuild
 FEATURE_PATH=$BASE/yael/feature

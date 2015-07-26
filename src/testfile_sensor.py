@@ -1,31 +1,26 @@
-import os, sys, pickle
-import numpy as np
-from numpy import genfromtxt
-from sklearn import svm, preprocessing
+'''
+Test sensor data using GMM and SVM models trained before.
+'''
+__author__ = '1000892'
+print __doc__
 
-BASE_PATH = '/home/sibo/Documents/Projects/'
-DATASET_PATH = BASE_PATH + 'multimodal_sensors/sensor_data/data_txt/'
-LIBRARY_PATH = BASE_PATH + 'yael/yael_v438/'
-RESULT_PATH = BASE_PATH + 'multimodal_sensors/results/'
+from config import *
+
 TYPE = 'sensor'
-
-sys.path.append(LIBRARY_PATH)
-from yael import ynumpy
-
 WINDOW_SIZE = 10
 
 ######################################################
 # load model
-file_gmm = open(RESULT_PATH + 'gmm_' + TYPE + '.pkl', 'rb')
+file_gmm = open(MODEL_PATH + 'gmm_' + TYPE + '.pkl', 'rb')
 gmm = pickle.load(file_gmm)
 
-file_svm = open(RESULT_PATH + 'svm_' + TYPE + '.pkl', 'rb')
+file_svm = open(MODEL_PATH + 'svm_' + TYPE + '.pkl', 'rb')
 svc = pickle.load(file_svm)
 
-file_mean = open(RESULT_PATH + 'mean_' + TYPE + '.pkl', 'rb')
+file_mean = open(MODEL_PATH + 'mean_' + TYPE + '.pkl', 'rb')
 mean = pickle.load(file_mean)
 
-file_pca = open(RESULT_PATH + 'pca_' + TYPE + '.pkl', 'rb')
+file_pca = open(MODEL_PATH + 'pca_' + TYPE + '.pkl', 'rb')
 pca_transform = pickle.load(file_pca)
 
 ######################################################
@@ -34,8 +29,8 @@ filename = sys.argv[-1]
 print 'test file:\n\t', filename
 
 sensor_data = genfromtxt(filename)
-# delete first two columns
-sensor_data = sensor_data[:,2:]
+# delete first two columns and first row
+sensor_data = sensor_data[1:,2:]
 nrow, ncol = sensor_data.shape
 nrow_window = nrow / WINDOW_SIZE
 ncol_window = ncol * WINDOW_SIZE

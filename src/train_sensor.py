@@ -1,24 +1,30 @@
+'''
+Training GMM model and SVM model for sensor data.
+'''
+__author__ = '1000892'
+print(__doc__)
+
 import os, sys, pickle
 import numpy as np
 from numpy import genfromtxt
 from sklearn import svm, preprocessing
 
 BASE_PATH = '/home/sibo/Documents/Projects/'
-DATASET_PATH = BASE_PATH + 'multimodal_sensors/sensor_data/data_txt/'
+DATASET_PATH = BASE_PATH + 'yael/data_csv/'
 LIBRARY_PATH = BASE_PATH + 'yael/yael_v438/'
-RESULT_PATH = BASE_PATH + 'multimodal_sensors/results/'
+RESULT_PATH = BASE_PATH + 'yael/results/'
 TYPE = 'sensor'
 
 sys.path.append(LIBRARY_PATH)
 from yael import ynumpy
 
-WINDOW_SIZE = 10
+WINDOW_SIZE = 5
 
 ######################################################
 # list of available images
 sensor_names = [filename 
                for filename in os.listdir(DATASET_PATH)
-               if filename.endswith('.txt')]
+               if filename.endswith('.csv')]
 
 # sort data names
 sensor_names.sort()
@@ -28,29 +34,29 @@ sensor_names.sort()
 all_data = []
 for sname in sensor_names:
 	# train with first 9 data in each activity
-	if not sname.endswith('10.txt'):
-		# print 'reading file:', sname
-		# convert data into windows
-		sensor_data = genfromtxt(DATASET_PATH + sname)
-		# delete first two columns
-		sensor_data = sensor_data[:,2:]
-		nrow, ncol = sensor_data.shape
-		nrow_window = nrow / WINDOW_SIZE
-		ncol_window = ncol * WINDOW_SIZE
-		# match row number with window_data
-		sensor_data = sensor_data[0:(nrow_window * WINDOW_SIZE),:]
-		window_data = []
-		for col in range(ncol):
-			window_data.append(sensor_data[:,col].reshape((-1, 10)))
-		window_data = np.hstack(window_data)
-		window_data = window_data.astype('float32')
-		all_data.append(window_data)
-
+	# if not sname.endswith('10.csv'):
+	print 'reading file:', sname
+	# convert data into windows
+	sensor_data = genfromtxt(DATASET_PATH + sname, delimiter=",")
+	# delete first two columns
+	# sensor_data = sensor_data[:,2:]
+	nrow, ncol = sensor_data.shape
+	nrow_window = nrow / WINDOW_SIZE
+	ncol_window = ncol * WINDOW_SIZE
+	# match row number with window_data
+	sensor_data = sensor_data[0:(nrow_window * WINDOW_SIZE),:]
+	window_data = []
+	for col in range(ncol):
+		window_data.append(sensor_data[:,col].reshape((-1, WINDOW_SIZE)))
+	window_data = np.hstack(window_data)
+	window_data = window_data.astype('float32')
+	all_data.append(window_data)
+	print window_data.shape
 all_data_np = np.vstack(all_data)
 
 ######################################################
 # GMM part
-k = 25
+k = 10
 n_sample = k * 100
 # choose n_sample descriptors at random
 sample_indices = np.random.choice(all_data_np.shape[0], n_sample)
@@ -63,8 +69,10 @@ sample = sample - mean
 cov = np.dot(sample.T, sample)
 # compute PCA matrix and keep only 64 dimensions
 eigvals, eigvecs = np.linalg.eig(cov)
-perm = eigvals.argsort()                   # sort by increasing eigenvalue
-pca_transform = eigvecs[:, perm[-100:]]   # eigenvectors for the 64 last eigenvalues
+# sort by increasing eigenvalue
+perm = eigvals.argsort()
+# eigenvectors for the half last eigenvalues
+pca_transform = eigvecs[:, perm[-(WINDOW_SIZE*19)/2:]]
 # transform sample with PCA (note that numpy imposes line-vectors,
 # so we right-multiply the vectors)
 sample = np.dot(sample, pca_transform)
@@ -88,11 +96,18 @@ image_fvs = np.sign(image_fvs) * np.abs(image_fvs) ** 0.5
 norms = np.sqrt(np.sum(image_fvs ** 2, 1))
 image_fvs /= norms.reshape(-1, 1)
 
+print image_fvs.shape
+
+# save fisher vector to file
+file_fv = open(RESULT_PATH + 'fv_' + TYPE + '.pkl', 'wb')
+pickle.dump(image_fvs, file_fv)
+file_fv.close()
+
 ######################################################
 # SVM train part
-C = 100
+C = 10
 X_train = image_fvs
-y_train = np.concatenate((0*np.ones(9), 1*np.ones(9), 2*np.ones(9), 3*np.ones(9), 4*np.ones(9), 5*np.ones(9), 6*np.ones(9), 7*np.ones(9), 8*np.ones(9), 9*np.ones(9)))
+y_train = np.kron(np.arange(20), np.ones(10))
 
 svc = svm.SVC(kernel='linear', C=C).fit(X_train, y_train)
 

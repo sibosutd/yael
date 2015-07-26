@@ -4,75 +4,68 @@ Test video data using GMM and SVM models trained before.
 __author__ = '1000892'
 print __doc__
 
-import os, sys, pickle, time, datetime
-import numpy as np
-from sklearn import svm
+from config import *
 
-BASE_PATH = '/home/sibo/Documents/Projects/'
-DATASET_PATH = BASE_PATH + 'multimodal_sensors/video_data/feature_test/'
-LIBRARY_PATH = BASE_PATH + 'yael/yael_v438/'
-RESULT_PATH = BASE_PATH + 'multimodal_sensors/results/'
 TYPE = 'video'
 
-sys.path.append(LIBRARY_PATH)
-from yael import ynumpy
-
+######################################################
+# show processing time
 # start_time = datetime.datetime.now()
 # print 'Start running:', start_time
 
 ######################################################
 # load model
 # for type_feature in ['traj', 'hog', 'hof', 'mbh']:
-file_gmm = open(RESULT_PATH + 'gmm_' + 'traj' + '_' + TYPE + '.pkl', 'rb')
+file_gmm = open(MODEL_PATH + 'gmm_' + 'traj' + '_' + TYPE + '.pkl', 'rb')
 gmm_traj = pickle.load(file_gmm)
 file_gmm.close()
 
-file_mean = open(RESULT_PATH + 'mean_' + 'traj' + '_' + TYPE + '.pkl', 'rb')
+file_mean = open(MODEL_PATH + 'mean_' + 'traj' + '_' + TYPE + '.pkl', 'rb')
 mean_traj = pickle.load(file_mean)
 file_mean.close()
 
-file_pca = open(RESULT_PATH + 'pca_' + 'traj' + '_' + TYPE + '.pkl', 'rb')
+file_pca = open(MODEL_PATH + 'pca_' + 'traj' + '_' + TYPE + '.pkl', 'rb')
 pca_traj = pickle.load(file_pca)
 file_pca.close()
 
-file_gmm = open(RESULT_PATH + 'gmm_' + 'hog' + '_' + TYPE + '.pkl', 'rb')
+file_gmm = open(MODEL_PATH + 'gmm_' + 'hog' + '_' + TYPE + '.pkl', 'rb')
 gmm_hog = pickle.load(file_gmm)
 file_gmm.close()
 
-file_mean = open(RESULT_PATH + 'mean_' + 'hog' + '_' + TYPE + '.pkl', 'rb')
+file_mean = open(MODEL_PATH + 'mean_' + 'hog' + '_' + TYPE + '.pkl', 'rb')
 mean_hog = pickle.load(file_mean)
 file_mean.close()
 
-file_pca = open(RESULT_PATH + 'pca_' + 'hog' + '_' + TYPE + '.pkl', 'rb')
+file_pca = open(MODEL_PATH + 'pca_' + 'hog' + '_' + TYPE + '.pkl', 'rb')
 pca_hog = pickle.load(file_pca)
 file_pca.close()
 
-file_gmm = open(RESULT_PATH + 'gmm_' + 'hof' + '_' + TYPE + '.pkl', 'rb')
+file_gmm = open(MODEL_PATH + 'gmm_' + 'hof' + '_' + TYPE + '.pkl', 'rb')
 gmm_hof = pickle.load(file_gmm)
 file_gmm.close()
 
-file_mean = open(RESULT_PATH + 'mean_' + 'hof' + '_' + TYPE + '.pkl', 'rb')
+file_mean = open(MODEL_PATH + 'mean_' + 'hof' + '_' + TYPE + '.pkl', 'rb')
 mean_hof = pickle.load(file_mean)
 file_mean.close()
 
-file_pca = open(RESULT_PATH + 'pca_' + 'hof' + '_' + TYPE + '.pkl', 'rb')
+file_pca = open(MODEL_PATH + 'pca_' + 'hof' + '_' + TYPE + '.pkl', 'rb')
 pca_hof = pickle.load(file_pca)
 file_pca.close()
 
-file_gmm = open(RESULT_PATH + 'gmm_' + 'mbh' + '_' + TYPE + '.pkl', 'rb')
+file_gmm = open(MODEL_PATH + 'gmm_' + 'mbh' + '_' + TYPE + '.pkl', 'rb')
 gmm_mbh = pickle.load(file_gmm)
 file_gmm.close()
 
-file_mean = open(RESULT_PATH + 'mean_' + 'mbh' + '_' + TYPE + '.pkl', 'rb')
+file_mean = open(MODEL_PATH + 'mean_' + 'mbh' + '_' + TYPE + '.pkl', 'rb')
 mean_mbh = pickle.load(file_mean)
 file_mean.close()
 
-file_pca = open(RESULT_PATH + 'pca_' + 'mbh' + '_' + TYPE + '.pkl', 'rb')
+file_pca = open(MODEL_PATH + 'pca_' + 'mbh' + '_' + TYPE + '.pkl', 'rb')
 pca_mbh = pickle.load(file_pca)
 file_pca.close()
 
 # save svm model
-file_svm = open(RESULT_PATH + 'svm_' + TYPE + '.pkl', 'rb')
+file_svm = open(MODEL_PATH + 'svm_' + TYPE + '.pkl', 'rb')
 svc = pickle.load(file_svm)
 file_svm.close()
 
