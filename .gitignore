@@ -42,7 +42,13 @@ yael_v438
 
 # Datasets #
 ############
-data_txt
+data_csv
 test_data
 rebuild
+rebuild_size_430_240_fps_15
 feature
+feature_size_430_240_fps_15
+model
+results
+sequence_20
+sequence_20_selected
